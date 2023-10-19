@@ -4,6 +4,11 @@ import scipy
 
 import streamlit as st
 
+st.set_page_config(
+    page_title="Plant Orchestra with GenAI",
+    page_icon="🎵"
+)
+
 # initialise model
 @st.cache_resource
 def initialise_model():
@@ -16,6 +21,8 @@ def initialise_model():
     except Exception as e:
         st.error(f"Error initializing the model: {str(e)}")
         return None, None
+    
+processor, model = initialise_model()
     
 
 # Generate audio with given prompt
@@ -38,10 +45,7 @@ def save_file(model, audio_values, filename):
     sampling_rate = model.config.audio_encoder.sampling_rate
     scipy.io.wavfile.write(filename, rate=sampling_rate, data=audio_values[0, 0].cpu().numpy())
 
-st.set_page_config(
-    page_title="Plant Orchestra with GenAI",
-    page_icon="🎵"
-)
+
 
 st.title("Plant Orchestra 🌻")
 st.markdown("Generate music based on your own plant orchestra.")
@@ -49,8 +53,8 @@ st.markdown("Generate music based on your own plant orchestra.")
 
 prompt = st.text_input(label='Prompt:', value='Sunflower temperature: 32.5C UV light intensity: 50% Soil water level: 3cm/h')
 if st.button("Generate Music"):
-    with st.spinner("Initialising model..."):
-        processor, model = initialise_model()
+    #with st.spinner("Initialising model..."):
+    #    processor, model = initialise_model()
     if processor is not None and model is not None:
         with st.spinner("Generating audio..."):
             results = generate_audio(processor, model, prompt)
