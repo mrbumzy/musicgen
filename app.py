@@ -7,8 +7,10 @@ import streamlit as st
 # initialise model
 def initialise_model():
     try:
-        processor = AutoProcessor.from_pretrained("musicgen-small")
-        model = MusicgenForConditionalGeneration.from_pretrained("musicgen-small")
+        #processor = AutoProcessor.from_pretrained("musicgen-small")
+        processor = AutoProcessor.from_pretrained("facebook/musicgen-small")
+        # model = MusicgenForConditionalGeneration.from_pretrained("musicgen-small")
+        model = MusicgenForConditionalGeneration.from_pretrained("facebook/musicgen-small")
         return processor, model
     except Exception as e:
         st.error(f"Error initializing the model: {str(e)}")
@@ -35,8 +37,6 @@ def save_file(model, audio_values, filename):
     sampling_rate = model.config.audio_encoder.sampling_rate
     scipy.io.wavfile.write(filename, rate=sampling_rate, data=audio_values[0, 0].cpu().numpy())
 
-
-
 st.set_page_config(
     page_title="Plant Orchestra with GenAI",
     page_icon="🎵"
@@ -44,6 +44,7 @@ st.set_page_config(
 
 st.title("Plant Orchestra 🌻")
 st.markdown("Generate music based on your own plant orchestra.")
+
 
 prompt = st.text_input(label='Prompt:', value='Sunflower temperature: 32.5C UV light intensity: 50% Soil water level: 3cm/h')
 if st.button("Generate Music"):
@@ -56,7 +57,6 @@ if st.button("Generate Music"):
             with st.spinner("Saving audio..."):
                 filename = "plant_orchestra" + ".wav"
                 save_file(model, results, filename)
-            st.success("Music generated successfully!")
             with st.spinner("Displaying audio..."):
                 with open(filename, "rb") as f:
                     generation = f.read()
