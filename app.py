@@ -5,7 +5,7 @@ import scipy
 import streamlit as st
 
 # initialise model
-@st.cache
+@st.cache_resource
 def initialise_model():
     try:
         #processor = AutoProcessor.from_pretrained("musicgen-small")
